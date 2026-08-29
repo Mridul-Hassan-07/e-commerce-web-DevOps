@@ -1,0 +1,6 @@
+{
+  "name": "mehnajmart",
+  "description": "MehnajMart - Premium Bangladeshi E-Commerce with Cash on Delivery (COD), Steadfast Courier tracking, category and subcategory navigation, real-time search, customer portal, and complete admin management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
