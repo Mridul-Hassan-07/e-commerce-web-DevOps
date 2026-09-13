@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mehnajmart-db
+  namespace: mehnaj-mart
+spec:
+  replicas:   
+  serviceName: mehnajmart-db-service
+  selector:
+    matchLabels:
+      type: db
+  template:
+    metadata:
+      name: mehnajmart-db
+      labels:
+        type: db
+    spec:
+      containers:
+      - name: mehnajmart-db
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+
+        envFrom:
+        - secretRef:
+            name: postgresql-secret
+
+        volumeMounts:
+        - name: mehnajmart-postgres-volume
+          mountPath: /var/lib/postgresql/data/pgdata
+
+  volumeClaimTemplates:
+  - metadata:
+      name: mehnajmart-postgres-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+
