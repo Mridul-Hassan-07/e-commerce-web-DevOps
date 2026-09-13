@@ -48,7 +48,7 @@ jobs:
     name: Push images to Dockerhub
     needs: ci
     runs-on: ubuntu-latest
-    envionment: mehnaj-mart
+    environment: mehnaj-mart
     env:
       DOCKERHUB_USERNAME = ${{ secrets.DOCKERHUB_USERNAME }}
 
