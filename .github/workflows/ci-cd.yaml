@@ -1,0 +1,130 @@
+name: CI/CD - kubernetes deployment on EC2
+
+on:
+  push: 
+    branches:
+      - master
+
+jobs:
+  ci:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    environment: mehnaj-mart
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      NODE_END: ${{ secrets.NODE_ENV }}
+      VITE_APP_NAME: ${{ secrets.VITE_APP_NAME }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      PGDATA: ${{ secrets.PGDATA }}
+
+      steps:
+
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Build Docker images
+          run: docker compose build
+
+        - name: Start Application
+          run: docker compose up -d
+
+        - name: Check running containers
+          run: docker compose ps
+
+        - name: Stop application
+          run: docker compose down -v
+
+        - name: Show logs if CI fails
+          if: failure()
+          run: docker compose logs
+
+        - name: Stop application
+          if: always()
+          run: docker compose down -v
+
+  push:
+    name: Push images to Dockerhub
+    needs: ci
+    runs-on: ubuntu-latest
+    envionment: mehnaj-mart
+    env:
+      DOCKERHUB_USERNAME = ${{ secrets.DOCKERHUB_USERNAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Dockerhub
+        uses: docekr/login@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Push Docker images 
+        run: docker compose push
+
+  cd:
+    name: Deploy to Kubernetes
+    needs: push
+    runs-on: ubuntu-latest
+    environment: mehnaj-mart
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy k8s manifests to EC2
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST_ADDRESS }}
+          username: ${{ secrets.EC2_HOST }}
+          key: ${{ secrets.EC2_SERVER_KEY }}
+          source: "k8s/*"
+          target: "home/ubuntu/k8s/"
+          strip_components: 1
+
+      - name: Deploy application to kubernetes
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST_ADDRESS }}
+          username: ${{ secrets.EC_HOST }}
+          key: ${{ secrets.EC2_SERVER_KEY }}
+          script: |
+            set -e
+
+            NAMESPACE="mehnaj-mart"
+            DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+
+            APP_IMAGE="$DOCKERHUB_USERNAME/mehnaj-mart:latest"
+
+            cd /home/ubuntu/
+
+            echo "Checking Kubernetes connection...."
+            kubectl get nodes
+
+            echo "Applying kubernetes namespace..."
+            kubectl apply -f k8s/namespace.yaml
+
+            echo "Applying kubernetes manifests..."
+            kubectl apply -f k8s/ -R
+
+            echo "Updating mehnaj-mart image...."
+            kubectl set image deployment/mehnaj-mart-deployment \
+            mehnaj-mart="$APP_IMAGE" \
+            --namespace="$NAMESPACE"
+
+            echo "Waiting for mehnaj-mart rollout..."
+            kubectl rollout status deployment/mehnaj-mart-deployment \
+            --namespace="$NAMESPACE" \
+            --timeout=180s
+
+            echo "Kubernetes deployment completed successfully."
+
+            kubectl get pods --namespace="$NAMESPACE"
+            kubectl get services --namespace="$NAMESPACE"
+
