@@ -12,7 +12,7 @@ jobs:
     environment: mehnaj-mart
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      NODE_END: ${{ secrets.NODE_ENV }}
+      NODE_ENV: ${{ secrets.NODE_ENV }}
       VITE_APP_NAME: ${{ secrets.VITE_APP_NAME }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -50,7 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: mehnaj-mart
     env:
-      DOCKERHUB_USERNAME = ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+
 
     steps:
       - name: Checkout repository
