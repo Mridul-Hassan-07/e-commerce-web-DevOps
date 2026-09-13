@@ -87,7 +87,7 @@ jobs:
           username: ${{ secrets.EC_HOST }}
           key: ${{ secrets.EC2_SERVER_KEY }}
           source: "k8s/*"
-          target: "home/ubuntu/k8s/"
+          target: "/home/ubuntu/k8s/"
           strip_components: 1
 
       - name: Deploy application to kubernetes
