@@ -84,7 +84,7 @@ jobs:
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.EC2_HOST_ADDRESS }}
-          username: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC_HOST }}
           key: ${{ secrets.EC2_SERVER_KEY }}
           source: "k8s/*"
           target: "home/ubuntu/k8s/"
