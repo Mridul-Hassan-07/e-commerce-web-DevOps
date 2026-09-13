@@ -19,30 +19,30 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       PGDATA: ${{ secrets.PGDATA }}
 
-      steps:
+    steps:
 
-        - name: Checkout repository
-          uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        - name: Build Docker images
-          run: docker compose build
+      - name: Build Docker images
+        run: docker compose build
 
-        - name: Start Application
-          run: docker compose up -d
+      - name: Start Application
+        run: docker compose up -d
 
-        - name: Check running containers
-          run: docker compose ps
+      - name: Check running containers
+        run: docker compose ps
 
-        - name: Stop application
-          run: docker compose down -v
+      - name: Stop application
+        run: docker compose down -v
 
-        - name: Show logs if CI fails
-          if: failure()
-          run: docker compose logs
+      - name: Show logs if CI fails
+        if: failure()
+        run: docker compose logs
 
-        - name: Stop application
-          if: always()
-          run: docker compose down -v
+      - name: Stop application
+        if: always()
+        run: docker compose down -v
 
   push:
     name: Push images to Dockerhub
