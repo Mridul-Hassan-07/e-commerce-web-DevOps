@@ -198,7 +198,7 @@ Both pipelines deploy to the **same AWS EC2 server**, proving the infrastructure
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your-username>/e-commerce-web-DevOps.git
+git clone https://github.com/Mridul-Hassan-07/e-commerce-web-DevOps.git
 cd e-commerce-web-DevOps
 
 # Create a .env file with the required variables
