@@ -69,5 +69,22 @@ pipeline {
                     }
             }
         }
+        
+        stage('Push Images') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKERHUB_USRNAME',
+                        passwordVariable: 'DOCKERUHB_PASSWORD'
+                    )
+                ) {
+                   sh '''
+                        docker compose push
+                    '''
+                }
+
+                }
+        }
     }
 }
