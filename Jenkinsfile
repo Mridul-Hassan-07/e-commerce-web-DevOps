@@ -91,7 +91,7 @@ pipeline {
             steps {
                 withCredentials([
                     sshUserPrivateKey(
-                        credentialsId: 'aws-server-cerdentials',
+                        credentialsId: 'aws-server-credentials',
                         keyFileVariable: 'SSH_KEY',
                         usernameVariable: 'SSH_USER'
                     ),
@@ -156,7 +156,7 @@ EOF
     post {
         always {
             sh '''
-                docker compose down -w || true
+                docker compose down -v || true
             '''
             }
         }
