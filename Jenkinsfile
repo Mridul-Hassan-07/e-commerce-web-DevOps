@@ -78,7 +78,7 @@ pipeline {
                         usernameVariable: 'DOCKERHUB_USRNAME',
                         passwordVariable: 'DOCKERUHB_PASSWORD'
                     )
-                ) {
+                ]) {
                    sh '''
                         docker compose push
                     '''
