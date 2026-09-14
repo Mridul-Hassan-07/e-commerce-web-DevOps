@@ -114,7 +114,7 @@ pipeline {
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
                             "$SSH_USER@13.127.214.122" \
-                            "DOCKERHUB_USERNAME='$DOCKHUB_USERNAME' bash -s" < 'EOF' 
+                            "DOCKERHUB_USERNAME='$DOCKERHUB_USERNAME' bash -s" << 'EOF' 
                             set -e
 
                             NAMESPACE="mehnaj-mart"
