@@ -1,38 +1,34 @@
 pipeline {
-	agent any
+    agent any
 
-	stages {
-			
-			stage('Checkout') {
-				steps {
-					checkout scm
-				}
-			}
+    stages {
 
-			stage('Build and Start') {
-				steps {
-					withCredentials([
-						usernamePassword(
-							credentialsId: 'dockerhub-credentials',
-							usernameVariable: 'DOCKERHUBU_USERNAME',
-							passwordVariable: 'DOCKERHUB_PASSWORD',
-						),
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-						file(
-						credentialsId: 'e-commerce-web-env',
-						variable: 'ENV_FILE'
-						)
-				]) {
-						sh '''
-							cp "$ENV_FILE" .env
-							docker compose up --build
-						'''
-				}
-			}
+        stage('Build and Start') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKERHUB_USERNAME',
+                        passwordVariable: 'DOCKERHUB_PASSWORD'
+                    ),
 
-
-
-
-
-	}
+                    file(
+                        credentialsId: 'e-commerce-web-env',
+                        variable: 'ENV_FILE'
+                    )
+                ]) {
+                    sh '''
+                        cp "$ENV_FILE" .env
+                        docker compose up --build
+                    '''
+                }
+            }
+        }
+    }
 }
