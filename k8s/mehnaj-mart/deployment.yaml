@@ -17,6 +17,7 @@ spec:
       containers:
       - name: mehnaj-mart
         image: mridul1265/mehnaj-mart:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 
