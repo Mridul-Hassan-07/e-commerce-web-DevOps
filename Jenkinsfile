@@ -25,9 +25,10 @@ pipeline {
 				]) {
 						sh '''
 							cp "$ENV_FILE" .env
-							docker compose up -d
+							docker compose up --build
 						'''
 				}
+			}
 
 
 
