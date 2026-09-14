@@ -152,15 +152,13 @@ EOF
                 }
         }
     }
-
+}
     post {
         always {
             sh '''
-                docker compose down -v || true
+                docker compose down -w || true
             '''
             }
-
-
         }
-    }
-}
+
+}   
