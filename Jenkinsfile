@@ -17,15 +17,35 @@ pipeline {
                         usernameVariable: 'DOCKERHUB_USERNAME',
                         passwordVariable: 'DOCKERHUB_PASSWORD'
                     ),
-
-                    file(
-                        credentialsId: 'e-commerce-web-env',
-                        variable: 'ENV_FILE'
+                    string(
+                        credentialsId: 'NODE_ENV',
+                        variable:'NODE_ENV'
+                    ),
+                    string(
+                        credentialsId: 'VITE_APP_NAME',
+                        variable: 'VITE_APP_NAME'
+                    ),
+                    string(
+                        credentialsId: 'POSTGRES_DB',
+                        variable: 'POSTGRES_DB'
+                    ),
+                    string(
+                        credentialsId: 'POSTGRES_USER',
+                        variable: 'POSTGRES_USER'
+                    ),
+                    string(
+                        credentialsId: 'POSTGRES_PASSWORD',
+                        variable: 'POSTGRES_PASSWORD',
+                    ),
+                    string(
+                        credentialsId: 'PGDATA',
+                        variable: 'PGDATA',
                     )
+
+                    
                 ]) {
                     sh '''
-                        cp "$ENV_FILE" .env
-                        docker compose up --build
+                        docker compose up -d --build
                     '''
                 }
             }
