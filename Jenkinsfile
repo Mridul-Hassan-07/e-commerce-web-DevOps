@@ -35,11 +35,11 @@ pipeline {
                     ),
                     string(
                         credentialsId: 'POSTGRES_PASSWORD',
-                        variable: 'POSTGRES_PASSWORD',
+                        variable: 'POSTGRES_PASSWORD'
                     ),
                     string(
                         credentialsId: 'PGDATA',
-                        variable: 'PGDATA',
+                        variable: 'PGDATA'
                     )
 
                     
@@ -48,6 +48,25 @@ pipeline {
                         docker compose up -d --build
                     '''
                 }
+            }
+        }
+        
+        stage('DOCKERHUB LOGIN') {
+            
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKERHUB_USERNAME',
+                        passwordVariable: 'DOCKERHUB_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKERHUB_PASSWORD" | docker login \
+                            --username "$DOCKERHUB_USERNAME" \
+                            --password-stdin
+                        '''
+                    }
             }
         }
     }
